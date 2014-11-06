@@ -11,10 +11,10 @@ class Server(threading.Thread):
         self.sock = socket.socket(socket.AF_INET, 	
                                   socket.SOCK_STREAM) 	
         self.port = 1234
-        self.interface = 'wlan0'
+        self.interface = 'eth0'
         self.connections = []
         
-        p = os.popen('ifconfig wlan0 | grep "inet addr"')
+        p = os.popen('ifconfig '+self.interface+' | grep "inet addr"')
         s = p.read()
         s = s.split()[1]
         self.serverIP = s.split(':')[1]
@@ -41,7 +41,11 @@ class Server(threading.Thread):
 
 def pipeRead():
     path = '/tmp/networkNotify'
-    os.mkfifo(path)
+    try:
+        os.mkfifo(path)
+    except IOError:
+        os.remove(path)
+        os.mkfifo(path)
     fifo = open(path,'r')
     msg = ''
     for line in fifo:

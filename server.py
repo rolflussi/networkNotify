@@ -39,20 +39,22 @@ class Server(threading.Thread):
             except socket.error:
                 del con
 
-def pipeRead():
-    path = '/tmp/networkNotify'
-    try:
-        os.mkfifo(path)
-    except IOError:
+class Pipe:
+    @staticmethod
+    def read():
+        path = '/tmp/networkNotify'
+        try:
+            os.mkfifo(path)
+        except OSError:
+            os.remove(path)
+            os.mkfifo(path)
+        fifo = open(path,'r')
+        msg = ''
+        for line in fifo:
+            msg += line + ' '
+        fifo.close()
         os.remove(path)
-        os.mkfifo(path)
-    fifo = open(path,'r')
-    msg = ''
-    for line in fifo:
-        msg += line + ' '
-    fifo.close()
-    os.remove(path)
-    return msg
+        return msg
     
                 
 if __name__=='__main__':
@@ -63,7 +65,7 @@ if __name__=='__main__':
     import time
 
     while True:
-        msg = pipeRead()
+        msg = Pipe.read()
         s.send(msg)
 
         

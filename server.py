@@ -5,20 +5,25 @@ import threading
 
 class Server(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, port = 1234, interface = 'eth0'):
         threading.Thread.__init__(self)
         self.daemon = True
         self.sock = socket.socket(socket.AF_INET, 	
                                   socket.SOCK_STREAM) 	
-        self.port = 1234
-        self.interface = 'eth0'
+        self.port = port
+        self.interface = interface
         self.connections = []
         
         p = os.popen('ifconfig '+self.interface+' | grep "inet addr"')
         s = p.read()
-        s = s.split()[1]
-        self.serverIP = s.split(':')[1]
-        self.sock.bind((self.serverIP, self.port))
+        try:
+            s = s.split()[1]
+        except IndexError:
+            print 'no IP address found to bind server'
+            
+        #self.serverIP = s.split(':')[1]
+        self.sock.bind(('', self.port))
+        #self.sock.bind((self.serverIP, self.port))
 
         # listen for incoming connections
         self.sock.listen(1)

@@ -18,7 +18,7 @@ class Client(threading.Thread):
             self.sock.connect((serverIP, self.port))
         except socket.error:
             print 'no server available'
-            exit()
+            exit(1)
         self.serverIP = serverIP
         self.running = True
         self.start()

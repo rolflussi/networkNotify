@@ -3,6 +3,7 @@ from subprocess import call
 import threading
 import os
 import signal
+import logging
 
 class Client(threading.Thread):
 
@@ -17,7 +18,7 @@ class Client(threading.Thread):
         try:
             self.sock.connect((serverIP, self.port))
         except socket.error:
-            print 'no server available'
+            logging.warning('no server available')
             return
         self.serverIP = serverIP
         self.running = True
@@ -27,10 +28,10 @@ class Client(threading.Thread):
         while self.running:
             msg = self.sock.recv(1024)
             if msg == '':
-                print 'server shut down'
-                exit()
+                logging.warning('server shut down')
+                self.running = False
+                return
             call = 'notify-send '+self.serverIP+' "'+msg+'"'
-            print call
             os.system(call)
 
     def disconnect(self):
@@ -45,7 +46,7 @@ if __name__=='__main__':
     import time
     print 'start network notify client'
     c = Client()
-    c.connect('127.0.0.0')
+    c.connect('192.168.0.3')
 
     signal.signal(signal.SIGINT, signalHandler)
 

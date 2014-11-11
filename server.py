@@ -2,6 +2,7 @@ import socket
 from subprocess import call
 import os
 import threading
+import logging
 
 class Server(threading.Thread):
 
@@ -16,8 +17,8 @@ class Server(threading.Thread):
         try:
             self.sock.bind(('', self.port))
         except socket.error:
-            print 'port is already assigned to other service'
-            print 'notifyDaemon already running?'
+            logging.warning("""port is already assigned to other service
+                            notifyDaemon already running?""")
             return
         # listen for incoming connections
         self.sock.listen(1)
@@ -25,9 +26,12 @@ class Server(threading.Thread):
         
     def run(self):
         while True:
-            connection, clientAddress = self.sock.accept()
+            try:
+                connection, clientAddress = self.sock.accept()
+            except:
+                continue
             (clientIP, clientPort) = clientAddress
-            print 'new client at '+clientIP
+            logging.info('new client at '+clientIP)
             self.connections.append(connection)
 
 
@@ -36,6 +40,7 @@ class Server(threading.Thread):
             try:
                 con.send(msg)
             except socket.error:
+                logging.info('removed client')
                 del con
 
 class Pipe:
@@ -57,7 +62,7 @@ class Pipe:
     
                 
 if __name__=='__main__':
-    print 'start network notify deamon'
+    
     s = Server()
     s.start()
 

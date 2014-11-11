@@ -44,7 +44,7 @@ if __name__=='__main__':
     if mode == 'both' or mode == 'server':
         while True:
             msg = Pipe.read()
-            s.send(msg)
+            server.send(msg)
     else:
         
         # wait for kill signal

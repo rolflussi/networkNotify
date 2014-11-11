@@ -24,22 +24,21 @@ if __name__=='__main__':
         print 'no config file found, using default settings'
         port = 5678
         mode = 'both'
-        serverIP = '163.152.71.180'
+        serverIP = '127.0.0.1'
     else:
         port = int(parser.get('general','port'))
         mode = parser.get('general','mode')
         
     if mode == 'both' or mode == 'server':
         # start server
-        iface = parser.get('server','interface')
-        server = Server(port,iface)
+        server = Server(port)
         server.start()
 
     if mode == 'both' or mode == 'client':
         # start client
         serverIP = parser.get('client','server')
         client = Client(port)
-        client.register(serverIP)
+        client.connect(serverIP)
 
     if mode == 'both' or mode == 'server':
         while True:

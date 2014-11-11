@@ -13,7 +13,7 @@ class Client(threading.Thread):
                                   socket.SOCK_STREAM) 	
         self.port = port
         
-    def register(self,serverIP):
+    def connect(self,serverIP):
         try:
             self.sock.connect((serverIP, self.port))
         except socket.error:
@@ -33,7 +33,7 @@ class Client(threading.Thread):
             print call
             os.system(call)
 
-    def unregister(self):
+    def disconnect(self):
         self.running = False
         self.sock.close()
 
@@ -45,7 +45,7 @@ if __name__=='__main__':
     import time
     print 'start network notify client'
     c = Client()
-    c.register('163.152.71.180')
+    c.connect('127.0.0.0')
 
     signal.signal(signal.SIGINT, signalHandler)
 

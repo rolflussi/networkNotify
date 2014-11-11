@@ -2,6 +2,7 @@ from server import Server,Pipe
 from client import Client
 from ConfigParser import SafeConfigParser
 from os.path import expanduser
+import signal
 
 def signalHandler(signal, frame):
     exit(0)
@@ -17,7 +18,7 @@ if __name__=='__main__':
     files = [homeDir+'/.config/network-notify/network-notify.conf',
              '/etc/network-notify/network-notify.conf',
              'config/network-notify.conf']
-    configs = parser.read()
+    configs = parser.read(files)
 
     if not configs:
         print 'no config file found, using default settings'
@@ -25,7 +26,7 @@ if __name__=='__main__':
         mode = 'both'
         serverIP = '163.152.71.180'
     else:
-        port = parser.get('general','port')
+        port = int(parser.get('general','port'))
         mode = parser.get('general','mode')
         
     if mode == 'both' or mode == 'server':

@@ -18,7 +18,7 @@ class Client(threading.Thread):
             self.sock.connect((serverIP, self.port))
         except socket.error:
             print 'no server available'
-            exit(1)
+            return
         self.serverIP = serverIP
         self.running = True
         self.start()
@@ -45,7 +45,7 @@ if __name__=='__main__':
     import time
     print 'start network notify client'
     c = Client()
-    c.register('192.168.0.3')
+    c.register('163.152.71.180')
 
     signal.signal(signal.SIGINT, signalHandler)
 
